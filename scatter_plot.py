@@ -38,17 +38,26 @@ def scatter_plot(filepath):
 
         if (f1, f2) == most_similar[0]:
             ax.set_facecolor('#e6ffe6')
-            color = 'red'
-            alpha = 0.8
-        else:
-            color = 'blue'
-            alpha = 0.3
 
-        ax.scatter(df[f1], df[f2], alpha=alpha, s=1, color=color)
+        if 'Hogwarts House' in df.columns and not df['Hogwarts House'].isna().all():
+            houses = df['Hogwarts House'].dropna().unique()
+            colors = {'Gryffindor': 'red', 'Slytherin': 'green', 'Ravenclaw': 'blue', 'Hufflepuff': 'gold'}
+
+            for house in houses:
+                house_data = df[df['Hogwarts House'] == house]
+                ax.scatter(house_data[f1], house_data[f2],
+                          alpha=0.6, s=3, label=house, color=colors.get(house, 'gray'))
+
+            if idx == 0:
+                ax.legend(fontsize=6, loc='best')
+        else:
+            ax.scatter(df[f1], df[f2], alpha=0.5, s=3, color='purple')
+
         ax.set_xlabel(f1[:15], fontsize=7)
         ax.set_ylabel(f2[:15], fontsize=7)
-        ax.set_title(f'r={corr:.3f}', fontsize=8)
+        ax.set_title(f'r={corr:.3f}', fontsize=8, fontweight='bold' if (f1, f2) == most_similar[0] else 'normal')
         ax.tick_params(labelsize=6)
+        ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
     plt.show()

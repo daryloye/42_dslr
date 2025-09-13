@@ -22,7 +22,7 @@ def histogram(filepath):
                                                          'Last Name', 'Birthday', 'Best Hand']]
 
     houses = df['Hogwarts House'].dropna().unique()
-    colors = {'Gryffindor': 'red', 'Slytherin': 'green', 'Ravenclaw': 'blue', 'Hufflepuff': 'yellow'}
+    colors = {'Gryffindor': 'red', 'Slytherin': 'green', 'Ravenclaw': 'blue', 'Hufflepuff': 'gold'}
 
     homogeneity_scores = {}
     for course in courses:
