@@ -8,69 +8,70 @@ import pandas as pd
 import numpy as np
 import json
 
-iterationLimit = 10000
-learningRate = 0.1
+feature_names = ['Astronomy', 'Herbology']
+hogwarts_house = 'Hogwarts House'
+iteration_limit = 10000
+learning_rate = 0.1
 
-outputFile = "weights.json"
+output_file = "weights.json"
 
-def logres_train(filepath):
+def softmax(z):
+    # numerical stability
+    max_per_row = np.max(z, axis=1, keepdims=True)
+    z -= max_per_row
+
+    exp_z = np.exp(z)
+    y_hat = exp_z / np.sum(exp_z, axis=1, keepdims=True)
+    return y_hat
+
+
+def logres_train(houses, features, y_actual):
     """Logistic regression train function"""
-    # TODO The first one will train your models, and it’s called logreg_train.py.
-    # TODO It takes dataset_train.csv as a parameter. For the mandatory part, you must
-    # TODO use the technique of gradient descent to minimize the error. The program generates
-    # TODO a file containing the weights that will be used for the prediction.
 
-    x_array = []
-    y_array = []
+    m = features.shape[0]   # number of samples
+    n = features.shape[1]   # number of features
+    k = houses.shape[0]     # number of classes (houses)
 
-    try:
-        with open(filepath) as file:
-            for line in file:
-                x, y = line.strip().split(",")  # TODO: choose columns for x and y
+    ones_column = np.ones((m, 1))
+    x = np.concatenate((ones_column, features), axis = 1)   # (m x n+1) array
 
-                try:
-                    x_array.append(float(x))
-                    y_array.append(float(y))
-                except (ValueError, IndexError):
-                    continue
-    except FileNotFoundError:
-        print("csv file not found")
-        exit(1)
-
-    # normalise data
-    n = len(x_array)
-    min_x = min(x_array)
-    max_x = max(x_array)
-    x_norm = [(n - min_x) / (max_x - min_x) for n in x_array]
-
-    # gradient descent loop
-    raw_theta0 = 0
-    raw_theta1 = 0
-
-    # TODO: use log regression formula
-    def getEstimateY(x):
-        return raw_theta0 + (raw_theta1 * x)
+    theta = np.zeros((n+1, k))    # (n+1 x k)
     
-    for _ in range(iterationLimit):
-        sum0 = sum(getEstimateY(x_norm[i]) - y[i] for i in range(n))
-        sum1 = sum((getEstimateY(x_norm[i]) - y[i]) * x_norm[i] for i in range(n))
+    for _ in range(iteration_limit):
+        z = x @ theta     # (m x n+1) x (n+1 x k).T = (m x k)
+        y_hat = softmax(z)  # (m x k)
+        grad = (x.T @ (y_hat - y_actual)) / m   # (m x n+1).T x (m x k) = (n+1, k)
+        theta -= learning_rate * grad
 
-        raw_theta0 -= learningRate * 1/n * sum0
-        raw_theta1 -= learningRate * 1/2 * sum1
-    
-    # adjusted theta
-    theta1 = raw_theta1 / (max_x - min_x)
-    theta0 = raw_theta0 - theta1 * min_x
+    return theta
 
-    print(json.dumps({'theta0': theta0, 'theta1': theta1}))
-    # TODO: write to file
+
+def save_weights(theta, houses):
+    theta_df = pd.DataFrame(theta, columns=houses)
+    theta_json = theta_df.to_json()
+    print(theta_json)
+    with open(output_file, "w") as file:
+        file.write(theta_json)
+
 
 def main():
     """Main function"""
     if len(sys.argv) != 2:
         print("Usage: python logreg_train.py dataset_train.csv")
         sys.exit(1)
-    logreg_train(sys.argv[1]) 
+    try:
+        df = pd.read_csv(sys.argv[1])
+        df = df.dropna(subset=feature_names)
+
+        houses = df[hogwarts_house].unique()
+        features = df[feature_names].to_numpy()     # (m x n) array
+        y_actual = pd.get_dummies(df[hogwarts_house]).astype(int).to_numpy()  # one-hot encoding
+        
+        theta = logres_train(houses, features, y_actual)
+        save_weights(theta, houses)
+    except:
+        print(f"Error: {e}")
+        sys.exit(1) 
  
 
 if __name__ == "__main__":
