@@ -11,7 +11,7 @@ from scipy import stats
 
 
 def histogram(filepath):
-    """Histogram function with homogeneity analysis"""
+    """Histogram function with homogeneity"""
     df = pd.read_csv(filepath)
 
     if 'Hogwarts House' not in df.columns or df['Hogwarts House'].isna().all():
@@ -22,8 +22,7 @@ def histogram(filepath):
                                                          'Last Name', 'Birthday', 'Best Hand']]
 
     houses = df['Hogwarts House'].dropna().unique()
-    colors = {'Gryffindor': 'red', 'Slytherin': 'green',
-              'Ravenclaw': 'blue', 'Hufflepuff': '#FFD700'}
+    colors = {'Gryffindor': 'red', 'Slytherin': 'green', 'Ravenclaw': 'blue', 'Hufflepuff': 'yellow'}
 
     homogeneity_scores = {}
     for course in courses:
