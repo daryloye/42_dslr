@@ -8,12 +8,37 @@ import pandas as pd
 import numpy as np
 import json
 
+hogwarts_house = 'Hogwarts House'
+output_file = 'houses.csv'
 
-def logreg_predict(filepaths):
+def softmax(z):
+    # numerical stability
+    max_per_row = np.max(z, axis=1, keepdims=True)
+    z -= max_per_row
+
+    exp_z = np.exp(z)
+    y_hat = exp_z / np.sum(exp_z, axis=1, keepdims=True)
+    return y_hat
+
+
+def logreg_predict(test_df, theta_df):
     """Logistic regression for prediction function"""
-    # TODO The second one must be named logreg_predict.[extension]. It takes dataset_test.csv
-    # TODO as a parameter and a file containing the weights trained by the previous program.
-    pass 
+
+    feature_names = theta_df.index[1:]
+    
+    x = test_df[feature_names].to_numpy()   # (m x n)
+    x = np.c_[np.ones(x.shape[0]), x]       # add bias column -> (m x n+1)
+    
+    theta = theta_df.to_numpy()             # (n+1 x k)
+    
+    z = x @ theta
+    y_hat = softmax(z)
+    predicted_index = np.argmax(y_hat, axis=1)
+    predicted_class = theta_df.columns[predicted_index]
+    
+    test_df[hogwarts_house] = predicted_class
+    predict_df = test_df.iloc[:, :1]
+    return predict_df
 
 
 def main():
@@ -21,7 +46,14 @@ def main():
     if len(sys.argv) != 3:
         print("Usage: python logreg_predict.py dataset_test.csv weights.json")
         sys.exit(1)
-    logreg_predict(sys.argv) 
+    try:
+        test_df = pd.read_csv(sys.argv[1], index_col=0)
+        theta_df = pd.read_json(sys.argv[2])
+        predict_df = logreg_predict(test_df, theta_df)
+        predict_df.to_csv(output_file)
+    except:
+        print(f"Error: {e}")
+        sys.exit(1)
  
 
 if __name__ == "__main__":
