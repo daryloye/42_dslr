@@ -47,7 +47,7 @@ def logres_train(houses, features, y_actual):
 
 
 def save_weights(theta, houses):
-    theta_df = pd.DataFrame(theta, columns=houses)
+    theta_df = pd.DataFrame(theta, columns=houses, index=(['bias'] + feature_names))
     theta_json = theta_df.to_json()
     print(theta_json)
     with open(output_file, "w") as file:
