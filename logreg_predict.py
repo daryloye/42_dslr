@@ -37,8 +37,9 @@ def logreg_predict(test_df, theta_df):
     predicted_class = theta_df.columns[predicted_index]
     
     test_df[hogwarts_house] = predicted_class
-    predict_df = test_df.iloc[:, :1]
-    return predict_df
+    y_predict_df = test_df.iloc[:, :1]
+    print(y_predict_df)
+    return y_predict_df
 
 
 def main():
@@ -49,8 +50,8 @@ def main():
     try:
         test_df = pd.read_csv(sys.argv[1], index_col=0)
         theta_df = pd.read_json(sys.argv[2])
-        predict_df = logreg_predict(test_df, theta_df)
-        predict_df.to_csv(output_file)
+        y_predict_df = logreg_predict(test_df, theta_df)
+        y_predict_df.to_csv(output_file)
     except:
         print(f"Error: {e}")
         sys.exit(1)

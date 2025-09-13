@@ -33,23 +33,23 @@ def logres_train(houses, features, y_actual):
     k = houses.shape[0]     # number of classes (houses)
 
     ones_column = np.ones((m, 1))
-    x = np.concatenate((ones_column, features), axis = 1)   # (m x n+1) array
+    x = np.concatenate((ones_column, features), axis = 1)   # (m x n+1)
 
-    theta = np.zeros((n+1, k))    # (n+1 x k)
+    theta = np.zeros((n+1, k))                  # (n+1 x k)
     
     for _ in range(iteration_limit):
-        z = x @ theta     # (m x n+1) x (n+1 x k).T = (m x k)
-        y_hat = softmax(z)  # (m x k)
+        z = x @ theta                           # (m x n+1) x (n+1 x k).T = (m x k)
+        y_hat = softmax(z)                      # (m x k)
         grad = (x.T @ (y_hat - y_actual)) / m   # (m x n+1).T x (m x k) = (n+1, k)
         theta -= learning_rate * grad
 
-    return theta
-
-
-def save_weights(theta, houses):
     theta_df = pd.DataFrame(theta, columns=houses, index=(['bias'] + feature_names))
+    print(theta_df)
+    return theta_df
+
+
+def save_weights(theta_df):
     theta_json = theta_df.to_json()
-    print(theta_json)
     with open(output_file, "w") as file:
         file.write(theta_json)
 
@@ -60,15 +60,15 @@ def main():
         print("Usage: python logreg_train.py dataset_train.csv")
         sys.exit(1)
     try:
-        df = pd.read_csv(sys.argv[1])
+        df = pd.read_csv(sys.argv[1], index_col=0)
         df = df.dropna(subset=feature_names)
 
         houses = df[hogwarts_house].unique()
         features = df[feature_names].to_numpy()     # (m x n) array
         y_actual = pd.get_dummies(df[hogwarts_house]).astype(int).to_numpy()  # one-hot encoding
         
-        theta = logres_train(houses, features, y_actual)
-        save_weights(theta, houses)
+        theta_df = logres_train(houses, features, y_actual)
+        save_weights(theta_df)
     except:
         print(f"Error: {e}")
         sys.exit(1) 
