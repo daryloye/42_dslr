@@ -12,10 +12,9 @@ hogwarts_house = 'Hogwarts House'
 output_file = 'houses.csv'
 
 def softmax(z):
-    # numerical stability
     max_per_row = np.max(z, axis=1, keepdims=True)
-    z -= max_per_row
-
+    z -= max_per_row        # numerical stability
+    
     exp_z = np.exp(z)
     y_hat = exp_z / np.sum(exp_z, axis=1, keepdims=True)
     return y_hat

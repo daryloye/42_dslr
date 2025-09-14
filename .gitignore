@@ -36,9 +36,7 @@ houses.csv
 *.joblib
 *.h5
 *.model
-weights.txt
-weights.json
-model_weights*
+*.json
 
 # IDE
 .vscode/
