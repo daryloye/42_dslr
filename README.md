@@ -17,3 +17,7 @@ python logreg_predict.py dataset_test.csv weights.json  # Make predictions
 - `describe.py` - Statistical description without built-in functions
 - `*.py` visualization scripts - Data exploration
 - `logreg_*.py` - Multi-class logistic regression implementation
+
+## note
+
+When submit trans project?
