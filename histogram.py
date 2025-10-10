@@ -32,6 +32,7 @@ def histogram(filepath):
             if len(house_data) > 0:
                 house_scores.append(house_data.values)
 
+        # analysis of variance method to check most homogeneous distributions
         if len(house_scores) >= 2:
             f_stat, p_value = stats.f_oneway(*house_scores)
             homogeneity_scores[course] = p_value

@@ -29,6 +29,7 @@ def scatter_plot(filepath):
 
     top_pairs = sorted(correlations.items(), key=lambda x: -x[1])[:4]
 
+    # Shop top 4 only or else screen cant see so many plots
     fig = plt.figure(figsize=(12, 10))
     fig.suptitle(f'Top 4 Most Similar Feature Pairs\nMost Similar: {feature1} & {feature2} (r={most_similar[1]:.3f})',
                  fontsize=14, fontweight='bold')

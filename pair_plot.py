@@ -22,6 +22,7 @@ def pair_plot(filepath):
         if len(subset) < 2:
             continue
 
+        # just use eyes to compare best separation between houses and course
         if 'Hogwarts House' in df.columns and not df['Hogwarts House'].isna().all():
             plot_data = df[subset + ['Hogwarts House']].dropna()
             g = sns.pairplot(plot_data, hue='Hogwarts House',
