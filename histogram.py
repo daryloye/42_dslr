@@ -57,7 +57,6 @@ def histogram(filepath):
             continue
 
         bins = np.linspace(all_course_data.min(), all_course_data.max(), 20)
-
         for house in houses[:4]:
             if pd.isna(house):
                 continue
@@ -91,7 +90,6 @@ def histogram(filepath):
 
 
 def main():
-    """Main function"""
     if len(sys.argv) != 2:
         print("Usage: python histogram.py dataset_train.csv")
         sys.exit(1)

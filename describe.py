@@ -8,15 +8,14 @@ import pandas as pd
 import numpy as np
 
 
-def ft_sort(values):
-    """Quicksort algorithm"""
+def ft_quicksort(values):
     if len(values) <= 1:
         return values
     pivot = values[len(values) // 2]
     left = [x for x in values if x < pivot]
     middle = [x for x in values if x == pivot]
     right = [x for x in values if x > pivot]
-    return ft_sort(left) + middle + ft_sort(right)
+    return ft_quicksort(left) + middle + ft_quicksort(right)
 
 
 def ft_percentile(sorted_list, percentile_value):
@@ -84,7 +83,7 @@ def describe(filepath):
             variance_sum += (value - mean) ** 2
         standard_deviation = (variance_sum / count) ** 0.5
         
-        sorted_values = ft_sort(clean_values)
+        sorted_values = ft_quicksort(clean_values)
         
         column_stats = {
             'Count': float(count),

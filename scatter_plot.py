@@ -46,8 +46,7 @@ def scatter_plot(filepath):
 
             for house in houses:
                 house_data = df[df['Hogwarts House'] == house]
-                ax.scatter(house_data[f1], house_data[f2],
-                          alpha=0.6, s=3, label=house, color=colors.get(house, 'gray'))
+                ax.scatter(house_data[f1], house_data[f2], alpha=0.6, s=3, label=house, color=colors.get(house, 'gray'))
 
             if idx == 0:
                 ax.legend(fontsize=6, loc='best')
