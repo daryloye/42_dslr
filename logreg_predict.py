@@ -51,7 +51,7 @@ def main():
         theta_df = pd.read_json(sys.argv[2])
         y_predict_df = logreg_predict(test_df, theta_df)
         y_predict_df.to_csv(output_file)
-    except:
+    except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
  

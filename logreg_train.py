@@ -25,13 +25,14 @@ def logres_train(df, mode="batch", batch_size=32,
                 output_file="weights.json"):
     """Logistic regression train function"""
 
-    houses = df[HOGWARTS_HOUSE].unique()
-    features = df[FEATURE_NAMES].to_numpy()                                 # (m x n) array
-    y_actual = pd.get_dummies(df[HOGWARTS_HOUSE]).astype(int).to_numpy()    # one-hot encoding
+    features = df[FEATURE_NAMES].to_numpy()   # (m x n) array
+    y_df = pd.get_dummies(df[HOGWARTS_HOUSE])
+    houses = list(y_df.columns)                
+    y_actual = y_df.astype(int).to_numpy()    # one-hot encoding
 
     m = features.shape[0]   # number of samples
     n = features.shape[1]   # number of features
-    k = houses.shape[0]     # number of classes (houses)
+    k = len(houses)         # number of classes (houses)
 
     ones_column = np.ones((m, 1))
     x = np.concatenate((ones_column, features), axis = 1)   # (m x n+1)
@@ -93,7 +94,7 @@ def main():
         logres_train(df, mode="batch", learning_rate=0.1, iteration_limit=10000, output_file="weights.json")
         logres_train(df, mode="sgd", learning_rate=0.01, iteration_limit=200000, output_file="sgd_weights.json")
         logres_train(df, mode="mini-batch", batch_size=32, learning_rate=0.1, iteration_limit=10000, output_file="mini_batch_weights.json")
-    except:
+    except Exception as e:
         print(f"Error: {e}")
         sys.exit(1) 
  
