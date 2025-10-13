@@ -24,9 +24,9 @@ def scatter_plot(filepath):
             corr = clean_data[f1].corr(clean_data[f2])
             correlations[(f1, f2)] = abs(corr)
 
+    # max and sorted function is allowed for the visualization script
     most_similar = max(correlations.items(), key=lambda x: x[1])
     feature1, feature2 = most_similar[0]
-
     top_pairs = sorted(correlations.items(), key=lambda x: -x[1])[:4]
 
     # Shop top 4 only or else screen cant see so many plots
